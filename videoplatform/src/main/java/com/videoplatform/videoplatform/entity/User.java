@@ -36,22 +36,22 @@ public class User {
     @Column
     @Setter
     @Getter
-    private String resetToken;
+    private LocalDateTime resetToken;
 
     @Column
     @Setter
     @Getter
-    private String resetTokenExpirationTime;
+    private LocalDateTime resetTokenExpirationTime;
 
     @Column
     @Setter
     @Getter
-    private String verification;
+    private LocalDateTime verification;
 
     @Column
     @Setter
     @Getter
-    private String verificationExpirationTime;
+    private LocalDateTime verificationExpirationTime;
 
     @Column(nullable = false,updatable = false)
     private LocalDateTime createdAt= LocalDateTime.now();

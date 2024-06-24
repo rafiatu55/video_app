@@ -40,8 +40,8 @@ public class UserService {
 
         //Generating a verification token for the user
         String verificationToken = generateVerificationToken();
-        user.setVerification(verificationToken);
-        user.setVerificationExpirationTime(String.valueOf(LocalDateTime.now().plusMinutes(20)));//This sets the verification tokenvalid for 20 minutes
+        user.setVerification(LocalDateTime.parse(verificationToken));
+        user.setVerificationExpirationTime(LocalDateTime.parse(String.valueOf(LocalDateTime.now().plusMinutes(20))));//This sets the verification tokenvalid for 20 minutes
 
 
         //Sending a verification token
@@ -92,8 +92,8 @@ public class UserService {
             throw new UserNotFoundException("User with email " + email + " not found.");
         }
 
-        user.setResetToken(token);
-        user.setResetTokenExpirationTime(String.valueOf(LocalDateTime.now().plusMinutes(20)));// OTP is valid for 10 minutes
+        user.setResetToken(LocalDateTime.parse(token));
+        user.setResetTokenExpirationTime(LocalDateTime.parse(String.valueOf(LocalDateTime.now().plusMinutes(20))));// OTP is valid for 10 minutes
         userRepository.save(user);
 
     }
@@ -157,8 +157,8 @@ public class UserService {
         if (user == null) {
             throw new UserNotFoundException("User with email " + email + " not found.");
         }
-        user.setVerification(token);
-        user.setVerificationExpirationTime(String.valueOf(LocalDateTime.now().plusHours(7))); // Token valid for 7 hours
+        user.setVerification(LocalDateTime.parse(token));
+        user.setVerificationExpirationTime(LocalDateTime.parse(String.valueOf(LocalDateTime.now().plusHours(7)))); // Token valid for 7 hours
         userRepository.save(user);
     }
 
