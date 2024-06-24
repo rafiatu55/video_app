@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -40,8 +41,8 @@ public class UserService {
 
         //Generating a verification token for the user
         String verificationToken = generateVerificationToken();
-        user.setVerification(LocalDateTime.parse(verificationToken));
-        user.setVerificationExpirationTime(LocalDateTime.parse(String.valueOf(LocalDateTime.now().plusMinutes(20))));//This sets the verification tokenvalid for 20 minutes
+        user.setVerificationToken(String.valueOf(LocalDateTime.parse(verificationToken)));
+        user.setVerificationTokenExpirationTime(LocalDateTime.from(LocalDateTime.parse(String.valueOf(LocalDateTime.now().plusMinutes(20)))));//This sets the verification tokenvalid for 20 minutes
 
 
         //Sending a verification token
@@ -92,7 +93,7 @@ public class UserService {
             throw new UserNotFoundException("User with email " + email + " not found.");
         }
 
-        user.setResetToken(LocalDateTime.parse(token));
+        user.setResetToken(String.valueOf(LocalDateTime.parse(token)));
         user.setResetTokenExpirationTime(LocalDateTime.parse(String.valueOf(LocalDateTime.now().plusMinutes(20))));// OTP is valid for 10 minutes
         userRepository.save(user);
 
@@ -157,8 +158,8 @@ public class UserService {
         if (user == null) {
             throw new UserNotFoundException("User with email " + email + " not found.");
         }
-        user.setVerification(LocalDateTime.parse(token));
-        user.setVerificationExpirationTime(LocalDateTime.parse(String.valueOf(LocalDateTime.now().plusHours(7)))); // Token valid for 7 hours
+        user.setVerificationToken(String.valueOf((token)));
+        user.setVerificationTokenExpirationTime(LocalDateTime.parse(String.valueOf(LocalDateTime.now().plusHours(7)))); // Token valid for 7 hours
         userRepository.save(user);
     }
 
@@ -169,7 +170,7 @@ public class UserService {
 
     //Generate verification link
     private String generateVerificationLink(String token){
-        return "http" + token;
+        return "http://localhost:8080" + token;
     }
 
     //Verify user's email
@@ -193,7 +194,7 @@ public class UserService {
 
         //Check if token has expired
         LocalDateTime currentTime = LocalDateTime.now();
-        if (user.getVerificationExpirationTime().isBefore(currentTime)){
+        if (user.getVerificationTokenExpirationTime().isBefore(currentTime)){
             throw new UserNotFoundException("Token has expired");
         }
         return user;

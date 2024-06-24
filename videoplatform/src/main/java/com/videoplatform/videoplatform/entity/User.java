@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Getter
 @Setter
@@ -36,7 +37,7 @@ public class User {
     @Column
     @Setter
     @Getter
-    private LocalDateTime resetToken;
+    private String resetToken;
 
     @Column
     @Setter
@@ -46,12 +47,12 @@ public class User {
     @Column
     @Setter
     @Getter
-    private LocalDateTime verification;
+    private String verificationToken;
 
     @Column
     @Setter
     @Getter
-    private LocalDateTime verificationExpirationTime;
+    private LocalDateTime verificationTokenExpirationTime;
 
     @Column(nullable = false,updatable = false)
     private LocalDateTime createdAt= LocalDateTime.now();
