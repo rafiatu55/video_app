@@ -13,94 +13,86 @@ import org.springframework.web.bind.annotation.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 @RestController
 @RequestMapping("api/user")
 public class UserController {
     private static final Logger LOGGER = Logger.getLogger(UserController.class.getName());
 
-    private final UserService userService;
-
+    private UserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
-    //Create a new user(Accessible to everyone)
+    // Create a new user (Accessible to everyone)
     @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestBody User user){
+    public ResponseEntity<User> createUser(@RequestBody User user) {
         try {
-
             User newUser = userService.createUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
-        }catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error creating user: " +e.getMessage(), e);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error creating user: " + e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-
     }
 
-    //Initiate Password Reset(Accessible to everyone)
+    // Initiate Password Reset (Accessible to everyone)
     @PostMapping("/password/reset")
-    public ResponseEntity<Void> initiatePasswordReset(@RequestBody PasswordResetRequest request){
+    public ResponseEntity<Void> initiatePasswordReset(@RequestBody PasswordResetRequest request) {
         try {
             String email = request.getEmail();
             userService.initiatePasswordReset(email);
             return ResponseEntity.noContent().build();
-        }catch(UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }catch (Exception e){
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error initiating password reset: " + e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
-    //Reset Password(Accessible to everyone)
+    // Reset Password (Accessible to everyone)
     @PostMapping("/password/reset/confirm")
-    public ResponseEntity<String> resetPassword(@RequestParam("token") String token, @RequestBody PasswordResetConfirmRequest request){
+    public ResponseEntity<String> resetPassword(@RequestParam("token") String token, @RequestBody PasswordResetConfirmRequest request) {
         try {
-            userService.resetPasswordWithToken(token,request.getNewPassword(), request.getConfirmPassword());
+            userService.resetPasswordWithToken(token, request.getNewPassword(), request.getConfirmPassword());
             return ResponseEntity.noContent().build();
-        }
-        catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Passwords do not match");
-        }
-        catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }catch (Exception e){
-            LOGGER.log(Level.SEVERE, "Error resetting password: " + e.getMessage(),e);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error resetting password: " + e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
-    //Initiate User Verification(Accessible to everyone)
+    // Initiate User Verification (Accessible to everyone)
     @PostMapping("/verify")
-    public ResponseEntity<Void> initiateVerification(@RequestBody String email){
+    public ResponseEntity<Void> initiateVerification(@RequestBody String email) {
         try {
             userService.initiateVerification(email);
             return ResponseEntity.noContent().build();
-        }catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }catch (Exception e){
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error initiating verification: " + e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
-    //Confirm User Verification
+    // Confirm User Verification
     @GetMapping("/verify/confirm")
-    public ResponseEntity<Void> confirmVerification(@RequestParam("token") String token){
+    public ResponseEntity<Void> confirmVerification(@RequestParam("token") String token) {
         try {
             userService.confirmVerification(token);
             return ResponseEntity.noContent().build();
-        }catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }catch (Exception e){
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error confirming verification: " + e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-
         }
     }
-
 }
