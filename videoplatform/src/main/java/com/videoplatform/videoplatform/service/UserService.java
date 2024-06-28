@@ -51,9 +51,11 @@ public class UserService {
         user.setVerificationToken(verificationToken);
         user.setVerificationTokenExpirationTime(LocalDateTime.now().plusMinutes(20)); // Valid for 20 minutes
 
+
+
         // Send the verification email
-        String verificationLink = generateVerificationLink(verificationToken);
-        emailService.SendEmail(user.getEmail(), "Account verification", "Please verify your account by clicking the verification link: " + verificationLink);
+         String verificationLink = generateVerificationLink(verificationToken);
+         emailService.SendEmail(user.getEmail(), "Account verification", "Please verify your account by clicking the verification link: " + verificationLink);
 
         // Save the user
         return userRepository.save(user);

@@ -28,15 +28,11 @@ public class SecurityConfig {
                 .formLogin()
                 .and()
                 .logout()
-                .permitAll().and().authenticationProvider(authenticationManager());
+                .permitAll();
         return http.build();
     }
 
-    public AuthenticationProvider authenticationManager(){
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
-        return authenticationProvider;
-    }
+
 
 
     @Bean
